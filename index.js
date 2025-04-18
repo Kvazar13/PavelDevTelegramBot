@@ -1,9 +1,6 @@
-/**
- * @fileoverview Telegram bot integrated with OpenAI API to answer questions about Pavel's experience.
- * Maintains conversation context for each user using session middleware.
- */
-
 require('dotenv').config()
+
+const fs = require('fs')
 const { OpenAI } = require('openai')
 const { Telegraf, session } = require('telegraf')
 
@@ -28,23 +25,18 @@ const openai = new OpenAI({
 
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
-bot.use(session({
-    defaultSession: () => ({
-        messages: [{ role: 'system', content: generateSystemPrompt() }]
+bot.use(
+    session({
+        defaultSession: () => ({
+            messages: [{ role: 'system', content: loadSystemPrompt() }]
+        })
     })
-}));
+)
+
 const MAX_MESSAGES = 10;
 
-/**
- * Generates the system prompt with Pavel's professional background.
- * Modify this function to include more detailed information about Pavel as needed.
- * @returns {string} The system prompt for OpenAI.
- */
-const generateSystemPrompt = () => {
-    return `You are an assistant knowledgeable about Pavel's professional background, experiences, skills, and history.
-     Answer recruiters' questions based on this information. Do not disclose any private or sensitive information.`;
-};
-
+const loadSystemPrompt = () =>
+    fs.readFileSync('system_prompt.txt', 'utf8').trim()
 /**
  * Handles incoming messages from users.
  * Maintains conversation history and interacts with OpenAI's ChatCompletion API.
