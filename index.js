@@ -25,6 +25,9 @@ const openai = new OpenAI({
 
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
+const loadSystemPrompt = () =>
+    fs.readFileSync('system_prompt.txt', 'utf8').trim()
+
 bot.use(
     session({
         defaultSession: () => ({
@@ -35,8 +38,7 @@ bot.use(
 
 const MAX_MESSAGES = 10;
 
-const loadSystemPrompt = () =>
-    fs.readFileSync('system_prompt.txt', 'utf8').trim()
+
 /**
  * Handles incoming messages from users.
  * Maintains conversation history and interacts with OpenAI's ChatCompletion API.
