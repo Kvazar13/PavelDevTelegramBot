@@ -67,26 +67,14 @@ bot.on('message', async (ctx) => {
         await ctx.reply('An error occurred while processing your request. Please try again later.');
     }
 });
+
 /**
  * Launches the bot and handles graceful shutdown.
  */
-const main = async () => {
-    try {
-        await bot.launch();
-        console.log('Bot started successfully.');
-    } catch (error) {
-        console.error('Failed to launch the bot:', error);
-        process.exit(1);
-    }
+;(async () => {
+    await bot.launch()
+    console.log('Bot lanzado.')
 
-    process.once('SIGINT', () => {
-        console.log('Received SIGINT. Shutting down gracefully...');
-        bot.stop('SIGINT');
-    });
-    process.once('SIGTERM', () => {
-        console.log('Received SIGTERM. Shutting down gracefully...');
-        bot.stop('SIGTERM');
-    });
-};
-
-main();
+    process.once('SIGINT', () => bot.stop('SIGINT'))
+    process.once('SIGTERM', () => bot.stop('SIGTERM'))
+})()
