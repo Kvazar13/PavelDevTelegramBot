@@ -7,17 +7,24 @@ require('dotenv').config()
 const { OpenAI } = require('openai')
 const { Telegraf, session } = require('telegraf')
 
+const aiKey = process.env.DEEPSEEK_API_KEY;
+
 if (!process.env.TELEGRAM_TOKEN) {
     console.error('Error: TELEGRAM_TOKEN is not set in the .env file.');
     process.exit(1);
 }
 
-if (!process.env.OPENAI_API_KEY) {
+if (!aiKey) {
     console.error('Error: OPENAI_API_KEY is not set in the .env file.');
     process.exit(1);
 }
 
-const openai = new OpenAI()
+// const openai = new OpenAI()
+
+const openai = new OpenAI({
+    baseURL: 'https://api.deepseek.com',
+    apiKey: aiKey
+});
 
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
@@ -34,7 +41,8 @@ const MAX_MESSAGES = 10;
  * @returns {string} The system prompt for OpenAI.
  */
 const generateSystemPrompt = () => {
-    return `You are an assistant knowledgeable about Pavel's professional background, experiences, skills, and history. Answer recruiters' questions based on this information. Do not disclose any private or sensitive information.`;
+    return `You are an assistant knowledgeable about Pavel's professional background, experiences, skills, and history.
+     Answer recruiters' questions based on this information. Do not disclose any private or sensitive information.`;
 };
 
 /**
@@ -52,7 +60,8 @@ bot.on('message', async (ctx) => {
         }
 
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            // model: "gpt-4o-mini",
+            model: "deepseek-chat",
             messages: ctx.session.messages,
         });
 
