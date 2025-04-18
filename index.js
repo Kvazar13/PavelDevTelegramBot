@@ -38,6 +38,15 @@ bot.use(
 
 const MAX_MESSAGES = 10;
 
+const mdToTelegramHtml = (md) => md
+    .replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
+    .replace(/^#{1,6}\s*(.+)$/gm, '<b>$1</b>')
+    .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    .replace(/^- (.+)$/gm, '• $1')
+
+const sendReply = async (ctx, text) => {
+    await ctx.reply(mdToTelegramHtml(text), { parse_mode: 'HTML' })
+}
 
 /**
  * Handles incoming messages from users.
@@ -60,10 +69,9 @@ bot.on('message', async (ctx) => {
         });
 
         const answer = completion.choices[0].message.content.trim();
-
         ctx.session.messages.push({ role: 'assistant', content: answer });
 
-        await ctx.reply(answer);
+        await sendReply(ctx, answer);
     } catch (error) {
         console.error('Error processing message:', error);
         await ctx.reply('An error occurred while processing your request. Please try again later.');
