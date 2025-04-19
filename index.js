@@ -86,10 +86,7 @@ bot.on('message', async (ctx) => {
  * Launches the bot and handles graceful shutdown.
  */
 ;(async () => {
-    // 1. Registrar el webhook en Telegram
     await bot.telegram.setWebhook(`${process.env.PUBLIC_URL}${route}`)
-
-    // 2. Levantar el servidor interno de Telegraf
     bot.startWebhook(route, null, PORT)
 
     console.log(`Webhook activo en puerto ${PORT}`)
