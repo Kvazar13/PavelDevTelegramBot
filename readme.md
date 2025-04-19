@@ -1,5 +1,7 @@
 # Pavel Devs Bot
 
+### Start to talk with him: @PavelDevsBot
+
 Telegram bot that answers recruiters’ questions about **Pavel Kozheykin / Павел Кожейкин** using an LLM (DeepSeek Chat, OpenAI‑compatible).  
 The bot keeps per‑user context, converts basic Markdown to Telegram‑HTML, and loads its long‑form system prompt from an external file so you can tweak replies without touching code.
 
