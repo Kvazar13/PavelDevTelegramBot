@@ -6,6 +6,10 @@ const { Telegraf, session } = require('telegraf')
 
 const aiKey = process.env.DEEPSEEK_API_KEY;
 
+const route = `/bot${process.env.TELEGRAM_TOKEN}`
+const PORT  = process.env.PORT || 3000
+
+
 if (!process.env.TELEGRAM_TOKEN) {
     console.error('Error: TELEGRAM_TOKEN is not set in the .env file.');
     process.exit(1);
@@ -82,9 +86,11 @@ bot.on('message', async (ctx) => {
  * Launches the bot and handles graceful shutdown.
  */
 ;(async () => {
-    await bot.launch()
-    console.log('Bot lanzado.')
+    // 1. Registrar el webhook en Telegram
+    await bot.telegram.setWebhook(`${process.env.PUBLIC_URL}${route}`)
 
-    process.once('SIGINT', () => bot.stop('SIGINT'))
-    process.once('SIGTERM', () => bot.stop('SIGTERM'))
+    // 2. Levantar el servidor interno de Telegraf
+    bot.startWebhook(route, null, PORT)
+
+    console.log(`Webhook activo en puerto ${PORT}`)
 })()
